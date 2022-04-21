@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+  <meta charset="UTF-8">
+  <title>React Practice</title>
+  <link rel="stylesheet" href="css/styles.css">
+  <script src="https://unpkg.com/react@18/umd/react.development.js" defer></script>
+  <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js" defer></script>
+
+  <!-- Don't use this in production: -->
+  <script src="https://unpkg.com/@babel/standalone/babel.min.js" defer></script>
+</head>
+
+<body>
+  <div id="root"></div>
+  <script type="text/babel">
+    (() => {
+      const Counter = props =>
+        <li style={{ backgroundColor: props.counter.color }} onClick={() => props.countUp(props.counter)}>
+          {props.counter.id}-({props.counter.count})
+        </li>;
+
+      const CounterList = props =>
+        <ul>{
+          props.counters.map(counter => <Counter counter={counter} key={counter.id} countUp={props.countUp} />)
+        }</ul>;
+
+      class App extends React.Component {
+        constructor() {
+          super();
+
+          this.state = {
+            counters: [
+              { id: 'A', count: 0, color: 'tomato' },
+              { id: 'B', count: 0, color: 'skyblue' },
+              { id: 'C', count: 0, color: 'limegreen' },
+              { id: 'D', count: 0, color: 'gray' },
+              { id: 'E', count: 0, color: 'pink' }
+            ],
+            total: 0
+          };
+
+          this.countUp = this.countUp.bind(this);
+        }
+
+        countUp(counter) {
+          this.setState(prevState => {
+            const counters = prevState.counters.map(c => c.id == counter.id ? { ...c, count: c.count + 1 } : c);
+            return { counters: counters, total: prevState.total + 1 };
+          });
+        }
+
+        render() {
+          return (
+            <div className="container">
+              <CounterList counters={this.state.counters} countUp={this.countUp} />
+              <div>TOTAL INVENTORY: {this.state.total}</div>
+            </div>
+          );
+        }
+      }
+
+      ReactDOM.render(<App />, document.getElementById('root'));
+    })();
+  </script>
+
+</html>
